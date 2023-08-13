@@ -6,7 +6,7 @@ require (
 	gitee.com/baixudong/conf v0.0.0-20230726070328-558967538279
 	gitee.com/baixudong/re v0.0.0-20230726070429-e1a623b3c133
 	gitee.com/baixudong/tools v0.0.0-20230726070525-d80da902e36d
-	github.com/tidwall/gjson v1.15.0
+	github.com/tidwall/gjson v1.16.0
 )
 
 require (
@@ -19,7 +19,7 @@ require (
 	github.com/stretchr/testify v1.8.4 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
-	golang.org/x/image v0.10.0 // indirect
-	golang.org/x/net v0.13.0 // indirect
-	golang.org/x/text v0.11.0 // indirect
+	golang.org/x/image v0.11.0 // indirect
+	golang.org/x/net v0.14.0 // indirect
+	golang.org/x/text v0.12.0 // indirect
 )
