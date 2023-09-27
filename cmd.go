@@ -13,8 +13,8 @@ import (
 	"sync"
 	"time"
 
-	"gitee.com/baixudong/bson"
 	"gitee.com/baixudong/conf"
+	"gitee.com/baixudong/gson"
 	"gitee.com/baixudong/re"
 	"gitee.com/baixudong/tools"
 )
@@ -248,7 +248,7 @@ func (obj *JyClient) readMain() {
 		return
 	}
 }
-func (obj *JyClient) run(dataMap map[string]any) (*bson.Client, error) {
+func (obj *JyClient) run(dataMap map[string]any) (*gson.Client, error) {
 	obj.lock.Lock()
 	defer obj.lock.Unlock()
 	select {
@@ -266,7 +266,7 @@ func (obj *JyClient) run(dataMap map[string]any) (*bson.Client, error) {
 	}
 	select {
 	case data := <-obj.pip:
-		return bson.Decode(data)
+		return gson.Decode(data)
 	case <-obj.client.Ctx().Done():
 		if obj.client.err != nil {
 			return nil, obj.client.err
@@ -276,7 +276,7 @@ func (obj *JyClient) run(dataMap map[string]any) (*bson.Client, error) {
 }
 
 // 执行函数,第一个参数是要调用的函数名称,后面的是传参
-func (obj *JyClient) Call(funcName string, values ...any) (jsonData *bson.Client, err error) {
+func (obj *JyClient) Call(funcName string, values ...any) (jsonData *gson.Client, err error) {
 	if jsonData, err = obj.run(map[string]any{"Type": "call", "Func": funcName, "Args": values}); err != nil {
 		if obj.client.err != nil {
 			err = obj.client.err

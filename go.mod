@@ -3,8 +3,8 @@ module gitee.com/baixudong/cmd
 go 1.21.1
 
 require (
-	gitee.com/baixudong/bson v0.0.0-20230926055556-209f126c0a34
 	gitee.com/baixudong/conf v0.0.0-20230923032133-1841ef7949dc
+	gitee.com/baixudong/gson v0.0.0-20230927054719-a259dd672035
 	gitee.com/baixudong/re v0.0.0-20230809033040-360c1d945e59
 	gitee.com/baixudong/tools v0.0.0-20230926010219-77f29cbf5935
 )
