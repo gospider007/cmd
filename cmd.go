@@ -13,10 +13,10 @@ import (
 	"sync"
 	"time"
 
-	"gitee.com/baixudong/conf"
-	"gitee.com/baixudong/gson"
-	"gitee.com/baixudong/re"
-	"gitee.com/baixudong/tools"
+	"github.com/gospider007/conf"
+	"github.com/gospider007/gson"
+	"github.com/gospider007/re"
+	"github.com/gospider007/tools"
 )
 
 type ClientOption struct {
