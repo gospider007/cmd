@@ -68,8 +68,8 @@ var cmdPipJsScript []byte
 //go:embed cmdPipPyScript.py
 var cmdPipPyScript []byte
 
-var jsScriptVersion = "018"
-var pyScriptVersion = "018"
+var jsScriptVersion = "019"
+var pyScriptVersion = "019"
 
 type JyClient struct {
 	client *Client
@@ -283,10 +283,11 @@ func (obj *JyClient) Call(funcName string, values ...any) (jsonData *gson.Client
 		}
 		return
 	}
+	result := jsonData.Get("Result")
 	if jsonData.Get("Error").Exists() && jsonData.Get("Error").String() != "" {
-		return jsonData.Get("Result"), errors.New(jsonData.Get("Error").String())
+		return result, errors.New(jsonData.Get("Error").String())
 	}
-	return jsonData.Get("Result"), nil
+	return result, nil
 }
 
 // 关闭解析器

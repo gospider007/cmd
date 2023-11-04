@@ -15,7 +15,7 @@ function requireFromString(code, ...names) {
 		throw new Error('code must be a string, not ' + typeof code);
 	}
 	var paths = Module._nodeModulePaths(path.dirname(filename));
-	var parent = module.parent;
+	var parent = require.main;
 	var m = new Module(filename, parent);
 	m.filename = filename;
 	m.paths = [].concat(opts.prependPaths).concat(paths).concat(opts.appendPaths);
