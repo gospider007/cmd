@@ -1,48 +1,20 @@
-var Module = require('module');
-var path = require('path');
-function requireFromString(code, ...names) {
-    code = Buffer.from(code, 'base64').toString('utf-8')
-    code +=`\r\n;module.exports={${names.join(",")}}`
-	if (typeof filename === 'object') {
-		opts = filename;
-		filename = undefined;
-	}
-	opts = {};
-	filename = '';
-	opts.appendPaths = opts.appendPaths || [];
-	opts.prependPaths = opts.prependPaths || [];
-	if (typeof code !== 'string') {
-		throw new Error('code must be a string, not ' + typeof code);
-	}
-	var paths = Module._nodeModulePaths(path.dirname(filename));
-	var parent = require.main;
-	var m = new Module(filename, parent);
-	m.filename = filename;
-	m.paths = [].concat(opts.prependPaths).concat(paths).concat(opts.appendPaths);
-	m._compile(code, filename);
-	var exports = m.exports;
-	parent && parent.children && parent.children.splice(parent.children.indexOf(m), 1);
-	return exports;
-};
 process.stdin.on('data', (data) => {
     let result
     let error
     try{
         dataStr=data.toString()
         let responseJson=JSON.parse(dataStr)
-        if (responseJson.Type=="init"){
-            tempExport=requireFromString(responseJson.Script,...responseJson.Names)
-            responseJson.Names.forEach(element => {
-                global[element]=tempExport[element]
-            });
-            responseJson.ModulePath.forEach((path)=>{
-                module.paths.push(path)                    
-            })            
+        if (responseJson.Type=="exec"){
+            global.eval(Buffer.from(responseJson.Script, 'base64').toString('utf-8'))
+        }else if (responseJson.Type=="eval"){
+            result=global.eval(Buffer.from(responseJson.Script, 'base64').toString('utf-8'))
+        }else if (responseJson.Type=="init"){
+            responseJson.ModulePath.forEach((path)=>{module.paths.push(path)})        
         }else if (responseJson.Type=="call"){
             if (responseJson.Args){
-                result=eval(`${responseJson.Func}`)(...responseJson.Args)
+                result=global.eval(`${responseJson.Func}`)(...responseJson.Args)
             }else{
-                result=eval(`${responseJson.Func}`)()
+                result=global.eval(`${responseJson.Func}`)()
             }
         }else{
             error="未知的类型"

@@ -4,9 +4,9 @@ go 1.21.3
 
 require (
 	github.com/gospider007/conf v0.0.0-20231024083436-9154e93052df
-	github.com/gospider007/gson v0.0.0-20231024092648-c97546a0287d
+	github.com/gospider007/gson v0.0.0-20231119141525-66095080057d
 	github.com/gospider007/re v0.0.0-20231024115818-adfd03636256
-	github.com/gospider007/tools v0.0.0-20231024115950-be51fa815fcd
+	github.com/gospider007/tools v0.0.0-20231122021245-1cafbac3ef46
 )
 
 require (
@@ -18,9 +18,9 @@ require (
 	github.com/tidwall/gjson v1.17.0 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
-	go.mongodb.org/mongo-driver v1.12.1 // indirect
-	golang.org/x/image v0.13.0 // indirect
-	golang.org/x/net v0.17.0 // indirect
-	golang.org/x/text v0.13.0 // indirect
+	go.mongodb.org/mongo-driver v1.13.0 // indirect
+	golang.org/x/image v0.14.0 // indirect
+	golang.org/x/net v0.18.0 // indirect
+	golang.org/x/text v0.14.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

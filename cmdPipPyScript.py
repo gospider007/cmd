@@ -1,21 +1,16 @@
-import warnings,base64
+import warnings,base64,sys,json
 warnings.filterwarnings("ignore",category=DeprecationWarning)
-import imp,sys,json
-def loadModule(source):
-    mod = sys.modules.setdefault("", imp.new_module(""))
-    exec(compile(base64.b64decode(source).decode("utf8"), "", 'exec'), mod.__dict__)
-    return mod
 while True:
+    dataStr=sys.stdin.readline()
     error=""
     result=""
     try:
-        dataStr=sys.stdin.readline()
         responseJson=json.loads(dataStr)
-        if responseJson.get("Type")=="init":
-            mod=loadModule(responseJson["Script"])
-            glo=globals()
-            for name in responseJson["Names"]:
-                glo[name]=getattr(mod,name)           
+        if responseJson.get("Type")=="exec":
+            exec(base64.b64decode(responseJson["Script"]).decode("utf8"),globals(),locals())
+        elif responseJson.get("Type")=="eval":
+            result=eval(base64.b64decode(responseJson["Script"]).decode("utf8"),globals(),locals())
+        elif responseJson.get("Type")=="init":
             for modulePath in responseJson["ModulePath"]:
                 sys.path.append(modulePath)
         elif responseJson.get("Type")=="call":
