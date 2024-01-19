@@ -3,14 +3,14 @@ module github.com/gospider007/cmd
 go 1.21.3
 
 require (
-	github.com/gospider007/conf v0.0.0-20231024083436-9154e93052df
+	github.com/gospider007/conf v0.0.0-20231215085618-d6cf3c479074
 	github.com/gospider007/gson v0.0.0-20231215083934-e7762897c4db
 	github.com/gospider007/re v0.0.0-20231024115818-adfd03636256
 	github.com/gospider007/tools v0.0.0-20231202084937-8b2bc66f8198
 )
 
 require (
-	github.com/andybalholm/brotli v1.0.6 // indirect
+	github.com/andybalholm/brotli v1.1.0 // indirect
 	github.com/gospider007/kinds v0.0.0-20231024093643-7a4424f2d30e // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
@@ -19,8 +19,8 @@ require (
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
 	go.mongodb.org/mongo-driver v1.13.1 // indirect
-	golang.org/x/image v0.14.0 // indirect
-	golang.org/x/net v0.19.0 // indirect
+	golang.org/x/image v0.15.0 // indirect
+	golang.org/x/net v0.20.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

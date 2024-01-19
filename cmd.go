@@ -134,7 +134,7 @@ func NewPyClient(pre_ctx context.Context, options ...PyClientOption) (*JyClient,
 		pip:    make(chan string),
 	}
 	go pyCli.readMain()
-	return pyCli, pyCli.init(option.ModulePath)
+	return pyCli, pyCli.init(pre_ctx, option.ModulePath)
 }
 
 type JsClientOption struct {
@@ -194,7 +194,7 @@ func NewJsClient(pre_ctx context.Context, options ...JsClientOption) (*JyClient,
 		pip:    make(chan string),
 	}
 	go jsCli.readMain()
-	return jsCli, jsCli.init(option.ModulePath)
+	return jsCli, jsCli.init(pre_ctx, option.ModulePath)
 }
 func (obj *JyClient) readMain() {
 	defer obj.Close()
@@ -223,11 +223,19 @@ func (obj *JyClient) readMain() {
 		return
 	}
 }
-func (obj *JyClient) run(dataMap map[string]any) (*gson.Client, error) {
+func (obj *JyClient) run(preCtx context.Context, dataMap map[string]any) (*gson.Client, error) {
+	var ctx context.Context
+	var cnl context.CancelFunc
+	if preCtx == nil {
+		ctx, cnl = context.WithCancel(obj.client.Ctx())
+	} else {
+		ctx, cnl = context.WithCancel(preCtx)
+	}
+	defer cnl()
 	obj.lock.Lock()
 	defer obj.lock.Unlock()
 	select {
-	case <-obj.client.Ctx().Done():
+	case <-ctx.Done():
 		if obj.client.Err() != nil {
 			return nil, obj.client.Err()
 		}
@@ -255,27 +263,27 @@ func (obj *JyClient) run(dataMap map[string]any) (*gson.Client, error) {
 			return jsonData, errors.New(jsonData.Get("Error").String())
 		}
 		return jsonData.Get("Result"), nil
-	case <-obj.client.Ctx().Done():
+	case <-ctx.Done():
 		if obj.client.Err() != nil {
 			return nil, obj.client.Err()
 		}
-		return nil, obj.client.Ctx().Err()
+		return nil, ctx.Err()
 	}
 }
 
 // 执行函数,第一个参数是要调用的函数名称,后面的是传参
-func (obj *JyClient) Call(funcName string, values ...any) (jsonData *gson.Client, err error) {
-	return obj.run(map[string]any{"Type": "call", "Func": funcName, "Args": values})
+func (obj *JyClient) Call(ctx context.Context, funcName string, values ...any) (jsonData *gson.Client, err error) {
+	return obj.run(ctx, map[string]any{"Type": "call", "Func": funcName, "Args": values})
 }
-func (obj *JyClient) Exec(script string) (err error) {
-	_, err = obj.run(map[string]any{"Type": "exec", "Script": tools.Base64Encode(script)})
+func (obj *JyClient) Exec(ctx context.Context, script string) (err error) {
+	_, err = obj.run(ctx, map[string]any{"Type": "exec", "Script": tools.Base64Encode(script)})
 	return
 }
-func (obj *JyClient) Eval(script string) (jsonData *gson.Client, err error) {
-	return obj.run(map[string]any{"Type": "eval", "Script": tools.Base64Encode(script)})
+func (obj *JyClient) Eval(ctx context.Context, script string) (jsonData *gson.Client, err error) {
+	return obj.run(ctx, map[string]any{"Type": "eval", "Script": tools.Base64Encode(script)})
 }
-func (obj *JyClient) init(modulePath ...[]string) (err error) {
-	_, err = obj.run(map[string]any{"Type": "init", "ModulePath": modulePath})
+func (obj *JyClient) init(ctx context.Context, modulePath ...[]string) (err error) {
+	_, err = obj.run(ctx, map[string]any{"Type": "init", "ModulePath": modulePath})
 	return
 }
 

@@ -19,17 +19,17 @@ func TestJs(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err = jsCli.Exec(script); err != nil {
+	if err = jsCli.Exec(nil, script); err != nil {
 		t.Fatal(err)
 	}
-	rs, err := jsCli.Call("sign", 1, 2)
+	rs, err := jsCli.Call(nil, "sign", 1, 2)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if rs.Get("signval").Int() != 1 || rs.Get("signval2").Int() != 2 {
 		t.Fatal("sign error")
 	}
-	rs, err = jsCli.Call("sign2", 1, 2)
+	rs, err = jsCli.Call(nil, "sign2", 1, 2)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -45,10 +45,10 @@ func TestPy(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err = pyCli.Exec(script); err != nil {
+	if err = pyCli.Exec(nil, script); err != nil {
 		t.Fatal(err)
 	}
-	rs, err := pyCli.Call("sign", 1, 2)
+	rs, err := pyCli.Call(nil, "sign", 1, 2)
 	if err != nil {
 		t.Fatal(err)
 	}
