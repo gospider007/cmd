@@ -267,7 +267,7 @@ func (obj *JyClient) run(preCtx context.Context, dataMap map[string]any) (*gson.
 		if obj.client.Err() != nil {
 			return nil, obj.client.Err()
 		}
-		return nil, ctx.Err()
+		return nil, context.Cause(ctx)
 	}
 }
 
@@ -307,7 +307,7 @@ func (obj *Client) Run() error {
 		return obj.err
 	} else if !obj.cmd.ProcessState.Success() {
 		if obj.ctx.Err() != nil {
-			obj.err = obj.ctx.Err()
+			obj.err = context.Cause(obj.ctx)
 			return obj.err
 		} else {
 			obj.err = errors.New("shell 执行异常")
