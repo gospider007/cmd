@@ -89,7 +89,7 @@ func NewPyClient(pre_ctx context.Context, options ...PyClientOption) (*JyClient,
 		option = options[0]
 	}
 	if option.PythonPath == "" {
-		option.PythonPath = "python"
+		option.PythonPath = "python3"
 	}
 	nowDir, err := os.Getwd()
 	if err != nil {
