@@ -49,6 +49,7 @@ func NewClient(pre_ctx context.Context, option ClientOption) (*Client, error) {
 	}
 	cmd := exec.CommandContext(ctx, option.Name, option.Args...)
 	setAttr(cmd)
+	cmd.Env = os.Environ()
 	cmd.Dir = option.Dir
 	result := &Client{
 		cmd:           cmd,
@@ -115,6 +116,7 @@ func NewPyClient(pre_ctx context.Context, options ...PyClientOption) (*JyClient,
 		Name: option.PythonPath,
 		Args: []string{"-u", filePath},
 	})
+
 	if err != nil {
 		return nil, err
 	}
