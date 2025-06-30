@@ -3,26 +3,26 @@ module github.com/gospider007/cmd
 go 1.24.0
 
 require (
-	github.com/gospider007/conf v0.0.0-20250107100154-6eb26b6e689c
-	github.com/gospider007/gson v0.0.0-20241216122450-fb66d0ba2a07
+	github.com/gospider007/conf v0.0.0-20250413121401-44c073ac3fe3
+	github.com/gospider007/gson v0.0.0-20250611163241-fa021e9c5531
 	github.com/gospider007/re v0.0.0-20250217075352-bcb79f285d6c
-	github.com/gospider007/tools v0.0.0-20250107090942-5b406ab8a72b
+	github.com/gospider007/tools v0.0.0-20250627013901-3925ccd90381
 )
 
 require (
 	github.com/STARRY-S/zip v0.2.3 // indirect
-	github.com/andybalholm/brotli v1.1.2-0.20250424173009-453214e765f3 // indirect
+	github.com/andybalholm/brotli v1.2.0 // indirect
 	github.com/bodgit/plumbing v1.3.0 // indirect
 	github.com/bodgit/sevenzip v1.6.1 // indirect
 	github.com/bodgit/windows v1.0.1 // indirect
 	github.com/dsnet/compress v0.0.2-0.20230904184137-39efe44ab707 // indirect
-	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/gospider007/kinds v0.0.0-20250217075226-10f199f7215d // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/klauspost/pgzip v1.2.6 // indirect
-	github.com/mholt/archives v0.1.2 // indirect
+	github.com/mholt/archives v0.1.3 // indirect
+	github.com/mikelolasagasti/xz v1.0.1 // indirect
 	github.com/minio/minlz v1.0.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
@@ -30,7 +30,6 @@ require (
 	github.com/pierrec/lz4/v4 v4.1.22 // indirect
 	github.com/sorairolake/lzip-go v0.3.7 // indirect
 	github.com/spf13/afero v1.14.0 // indirect
-	github.com/therootcompany/xz v1.0.1 // indirect
 	github.com/tidwall/gjson v1.18.0 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
