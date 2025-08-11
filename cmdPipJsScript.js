@@ -1,3 +1,6 @@
+_require = require
+_arguments = arguments
+
 process.stdin.on('data', (data) => {
     let result
     let error

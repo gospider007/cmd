@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	_ "embed"
@@ -8,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"os/exec"
 	"sync"
@@ -15,7 +17,6 @@ import (
 
 	"github.com/gospider007/conf"
 	"github.com/gospider007/gson"
-	"github.com/gospider007/re"
 	"github.com/gospider007/tools"
 )
 
@@ -69,14 +70,13 @@ var cmdPipJsScript []byte
 //go:embed cmdPipPyScript.py
 var cmdPipPyScript []byte
 
-var scriptVersion = "022"
+var scriptVersion = "025"
 
 type JyClient struct {
 	client *Client
 	write  io.WriteCloser
-	read   io.ReadCloser
+	read   *bufio.Reader
 	lock   sync.Mutex
-	pip    chan string
 }
 type PyClientOption struct {
 	PythonPath string   //python 的路径,ex: c:/python.exe
@@ -124,24 +124,35 @@ func NewPyClient(pre_ctx context.Context, options ...PyClientOption) (*JyClient,
 	if err != nil {
 		return nil, err
 	}
-	readBody, err := cli.StdOutPipe()
+	readPip, err := cli.StdOutPipe()
 	if err != nil {
 		return nil, err
 	}
 	go cli.Run()
 	pyCli := &JyClient{
 		client: cli,
-		read:   readBody,
+		read:   bufio.NewReader(readPip),
 		write:  writeBody,
-		pip:    make(chan string),
 	}
-	go pyCli.readMain()
 	return pyCli, pyCli.init(pre_ctx, option.ModulePath)
 }
 
 type JsClientOption struct {
 	NodePath   string   //node 的路径,ex: c:/node.exe
 	ModulePath []string //node包搜索路径,如果出现搜索不到包的情况,手动在这里加入路径哈
+}
+type writeCloser struct {
+	io.Writer
+}
+
+func (obj *writeCloser) Close() error {
+	return nil
+}
+func (obj *writeCloser) Write(p []byte) (n int, err error) {
+	return obj.Writer.Write(p)
+}
+func NoClose(w io.Writer) io.WriteCloser {
+	return &writeCloser{Writer: w}
 }
 
 // 创建json解析器
@@ -174,6 +185,7 @@ func NewJsClient(pre_ctx context.Context, options ...JsClientOption) (*JyClient,
 		}
 	}
 	cli, err := NewClient(pre_ctx, ClientOption{
+		Dir:  nowDir,
 		Name: option.NodePath,
 		Args: []string{filePath},
 	})
@@ -184,48 +196,44 @@ func NewJsClient(pre_ctx context.Context, options ...JsClientOption) (*JyClient,
 	if err != nil {
 		return nil, err
 	}
-	readBody, err := cli.StdOutPipe()
+	readPip, err := cli.StdOutPipe()
 	if err != nil {
 		return nil, err
 	}
 	go cli.Run()
 	jsCli := &JyClient{
 		client: cli,
-		read:   readBody,
+		read:   bufio.NewReader(readPip),
 		write:  writeBody,
-		pip:    make(chan string),
 	}
-	go jsCli.readMain()
 	return jsCli, jsCli.init(pre_ctx, option.ModulePath)
 }
-func (obj *JyClient) readMain() {
-	defer obj.Close()
-	doneChan := make(chan struct{})
-	go func() {
-		defer close(doneChan)
-		allCon := bytes.NewBuffer(nil)
-		tempCon := make([]byte, 1024)
-		var readInt int
-		var err error
-		for {
-			if readInt, err = obj.read.Read(tempCon); err != nil {
-				return
-			}
-			allCon.Write(tempCon[:readInt])
-			if rs := re.Search(`##gospider@start##(.*?)##gospider@end##`, allCon.String()); rs != nil {
-				obj.pip <- rs.Group(1)
-				allCon.Reset()
-			}
+
+var crlpstart = []byte("##gospider@start##")
+var crlpend = []byte("##gospider@end##")
+
+func (obj *JyClient) response() (*gson.Client, error) {
+	allCon := []byte{}
+	for {
+		con, err := obj.read.ReadBytes('#')
+		log.Print(string(con), err)
+		if err != nil {
+			return nil, err
 		}
-	}()
-	select {
-	case <-obj.client.Ctx().Done():
-		return
-	case <-doneChan:
-		return
+		allCon = append(allCon, con...)
+		if bytes.HasSuffix(allCon, crlpend) {
+			if !bytes.Contains(allCon, crlpstart) {
+				return nil, errors.New("数据包不完整")
+			}
+			startI := bytes.Index(allCon, crlpstart)
+			endI := bytes.Index(allCon, crlpend)
+			data := allCon[startI+len(crlpstart) : endI]
+			return gson.Decode(data)
+		}
 	}
 }
-func (obj *JyClient) run(preCtx context.Context, dataMap map[string]any) (*gson.Client, error) {
+func (obj *JyClient) run(preCtx context.Context, dataMap map[string]any) (jsonData *gson.Client, err error) {
+	log.Print(gson.Decode(dataMap))
 	var ctx context.Context
 	var cnl context.CancelFunc
 	if preCtx == nil {
@@ -255,11 +263,19 @@ func (obj *JyClient) run(preCtx context.Context, dataMap map[string]any) (*gson.
 		}
 		return nil, err
 	}
+	done := make(chan struct{})
+	var respErr error
+	go func() {
+		defer close(done)
+		jsonData, respErr = obj.response()
+	}()
 	select {
-	case data := <-obj.pip:
-		jsonData, err := gson.Decode(data)
-		if err != nil {
-			return jsonData, err
+	case <-done:
+		if obj.client.Err() != nil {
+			return nil, obj.client.Err()
+		}
+		if respErr != nil {
+			return nil, respErr
 		}
 		if jsonData.Get("Error").Exists() && jsonData.Get("Error").String() != "" {
 			return jsonData, errors.New(jsonData.Get("Error").String())
