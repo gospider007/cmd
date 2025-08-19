@@ -3,7 +3,7 @@ module github.com/gospider007/cmd
 go 1.25
 
 require (
-	github.com/gospider007/conf v0.0.0-20250413121401-44c073ac3fe3
+	github.com/gospider007/conf v0.0.0-20250815031235-1df45ae2e117
 	github.com/gospider007/gson v0.0.0-20250718004537-ff15820964bd
 	github.com/gospider007/tools v0.0.0-20250730001814-2c13a4717064
 )
@@ -15,8 +15,8 @@ require (
 	github.com/bodgit/sevenzip v1.6.1 // indirect
 	github.com/bodgit/windows v1.0.1 // indirect
 	github.com/dsnet/compress v0.0.2-0.20230904184137-39efe44ab707 // indirect
-	github.com/gospider007/kinds v0.0.0-20250217075226-10f199f7215d // indirect
-	github.com/gospider007/re v0.0.0-20250217075352-bcb79f285d6c // indirect
+	github.com/gospider007/kinds v0.0.0-20250815031133-b2282666f69c // indirect
+	github.com/gospider007/re v0.0.0-20250815031101-a57caeff73bf // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
