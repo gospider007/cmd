@@ -11,7 +11,7 @@ import (
 func setAttr(cmd *exec.Cmd) {
 	cmd.SysProcAttr = &syscall.SysProcAttr{
 		Setpgid:   true,
-		Pdeathsig: syscall.SIGTERM,
+		Pdeathsig: syscall.SIGKILL,
 	}
 }
 func killProcess(cmd *exec.Cmd) {
