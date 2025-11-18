@@ -9,7 +9,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"os/exec"
 	"sync"
@@ -216,7 +215,6 @@ func (obj *JyClient) response() (*gson.Client, error) {
 	allCon := []byte{}
 	for {
 		con, err := obj.read.ReadBytes('#')
-		log.Print(string(con), err)
 		if err != nil {
 			return nil, err
 		}
@@ -233,7 +231,6 @@ func (obj *JyClient) response() (*gson.Client, error) {
 	}
 }
 func (obj *JyClient) run(preCtx context.Context, dataMap map[string]any) (jsonData *gson.Client, err error) {
-	log.Print(gson.Decode(dataMap))
 	var ctx context.Context
 	var cnl context.CancelFunc
 	if preCtx == nil {
